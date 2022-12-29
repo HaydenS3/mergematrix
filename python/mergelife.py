@@ -359,3 +359,49 @@ def objective_function(ml_inst,cycles,objective,dump=False):
         lst.append(result['score'])
         steps+=result['time_step']
     return {'time_step':steps,'score':np.max(lst)}
+
+def calc_activity(ml_instance):
+    height = ml_instance['height']
+    width = ml_instance['width']
+    time_step = ml_instance['time_step']
+
+    e1 = ml_instance['lattice'][0]['eval']
+    e2 = ml_instance['lattice'][1]['eval']
+
+    if e1 is None or e2 is None:
+        return  0
+
+    d2_avg = e2['merge']
+
+    # What percent of the grid is the mode, what percent is the background
+    md2 = e2['mode']
+
+    mode_mask = (d2_avg == md2)
+
+    # how long ago was a pixel the mode
+    if 'eval-last-mode' in ml_instance['track']:
+        last_mode = ml_instance['track']['eval-last-mode']
+    else:
+        last_mode = np.zeros((height, width), dtype=np.int)
+        ml_instance['track']['eval-last-mode'] = last_mode
+
+    last_mode[mode_mask] = time_step
+
+
+    # Find the active cells
+    # An active cell has not been a background cell for 5 steps, but was a background cell in the last 25 steps
+    if time_step >= 25:
+        t = (ml_instance['time_step'] - last_mode)
+        t1 = t > 5
+        t2 = t < 25
+        t = np.logical_and(t1, t2)
+        sp = np.sum(t)
+    else:
+        sp = 0
+
+    size = height * width
+    cnt_act = sp
+
+    cnt_act /= size
+
+    return cnt_act
