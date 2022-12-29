@@ -1,12 +1,8 @@
-from secrets import token_hex
 from viewer import viewer
 
-HEIGHT = 15
-WIDTH = 20
+ROWS = 15
+COLS = 20
 INTERVAL = 100
 
-def gen_rule():
-    return token_hex(16)
-
-myviewer = viewer(HEIGHT, WIDTH, gen_rule(), INTERVAL)
+myviewer = viewer(ROWS, COLS, viewer.gen_rule(None), INTERVAL)
 myviewer.go_animate()
