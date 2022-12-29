@@ -7,8 +7,10 @@ import matplotlib.animation as animation
 from matplotlib.widgets import Button
 import mergelife
 from secrets import token_hex
+import time
 
 STATIC_LIMIT = 25
+TIME_LIMIT = 60
 
 class viewer:
     def __init__(self, rows, cols, interval=100):
@@ -19,14 +21,18 @@ class viewer:
         data = np.random.randint(0,256, size=(self.rows, self.cols, 3), dtype=np.uint8)
         self.im = plt.imshow(data, animated=True)
         self.create_ml_inst(None)
+        self.time = time.perf_counter()
 
     def create_ml_inst(self, event):
         self.static_cnt = 0
+        self.time = time.perf_counter()
         self.ml_inst = mergelife.new_ml_instance(self.rows, self.cols, self.gen_rule())
 
     def updatefig(self, *args):
         data2 = mergelife.update_step(self.ml_inst)
         if self.detect_static_rule():
+            self.create_ml_inst(None)
+        if time.perf_counter() - self.time > TIME_LIMIT:
             self.create_ml_inst(None)
         self.im.set_array(data2)
         return self.im, # Theres a comma here for some reason
