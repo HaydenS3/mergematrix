@@ -16,10 +16,8 @@ class viewer:
         self.cols = cols
         self.interval = interval
         self.fig = plt.figure()
-        self.i = 0
-        self.data = [None] * STATIC_LIMIT
-        self.data[self.i] = np.random.randint(0,256, size=(self.rows, self.cols, 3), dtype=np.uint8)
-        self.im = plt.imshow(self.data[self.i], animated=True)
+        data = np.random.randint(0,256, size=(self.rows, self.cols, 3), dtype=np.uint8)
+        self.im = plt.imshow(data, animated=True)
         self.static_cnt = 0
         self.create_ml_inst(None)
 
@@ -28,11 +26,10 @@ class viewer:
         self.ml_inst = mergelife.new_ml_instance(self.rows, self.cols, rule)
 
     def updatefig(self, *args):
-        self.update_i()
-        self.data[self.i] = mergelife.update_step(self.ml_inst)
+        data2 = mergelife.update_step(self.ml_inst)
         if self.detect_static_rule():
             self.create_ml_inst(None)
-        self.im.set_array(self.data[self.i])
+        self.im.set_array(data2)
         return self.im, # Theres a comma here for some reason
 
     def go_animate(self):
@@ -44,10 +41,6 @@ class viewer:
     
     def gen_rule(self):
         return token_hex(16)
-
-    def update_i(self):
-        self.i += 1
-        self.i = self.i % STATIC_LIMIT
     
     def detect_static_rule(self):
         if mergelife.calc_activity(self.ml_inst) == 0:
