@@ -18,12 +18,11 @@ class viewer:
         self.fig = plt.figure()
         data = np.random.randint(0,256, size=(self.rows, self.cols, 3), dtype=np.uint8)
         self.im = plt.imshow(data, animated=True)
-        self.static_cnt = 0
         self.create_ml_inst(None)
 
     def create_ml_inst(self, event):
-        rule = self.gen_rule()
-        self.ml_inst = mergelife.new_ml_instance(self.rows, self.cols, rule)
+        self.static_cnt = 0
+        self.ml_inst = mergelife.new_ml_instance(self.rows, self.cols, self.gen_rule())
 
     def updatefig(self, *args):
         data2 = mergelife.update_step(self.ml_inst)
@@ -46,6 +45,5 @@ class viewer:
         if mergelife.calc_activity(self.ml_inst) == 0:
             self.static_cnt += 1
             if self.static_cnt > STATIC_LIMIT:
-                self.static_cnt = 0
                 return True
         return False
