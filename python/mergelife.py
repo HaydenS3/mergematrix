@@ -5,9 +5,6 @@ import scipy.stats
 import ctypes
 from PIL import Image
 import dp
-import logging
-
-logger = logging.getLogger("mergelife")
 
 # The color table.
 COLOR_TABLE = [
@@ -250,10 +247,6 @@ def calc_objective_stats(ml_instance):
     cnt_fg /= size
     cnt_act /= size
     cnt_chaos /= size
-
-    logger.debug("{}:Mode Count: {}, Stable BG: {}, Stable FG: {}, Active: {}, Chaos: {}, Mage: {}".format(
-        ml_instance['time_step'], mc, cnt_bg,
-        cnt_fg, cnt_act, cnt_chaos, mage))
 
     return {'mage': mage, 'mode': md2, 'mc': mc, 'bg': cnt_bg, 'fg': cnt_fg, 'act': cnt_act, 'chaos': cnt_chaos}
 
