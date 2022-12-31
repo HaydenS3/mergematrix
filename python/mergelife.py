@@ -7,7 +7,6 @@ from PIL import Image
 import dp
 import logging
 
-PATH = "C:\\Users\\jeffh\\temp\mlife\\"
 logger = logging.getLogger("mergelife")
 
 # The color table.
