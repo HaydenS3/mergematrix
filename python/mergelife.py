@@ -84,19 +84,6 @@ def update_step(ml_instance):
     ml_instance['time_step'] += 1
     return current_data
 
-
-def toHex(code):
-    result = ""
-
-    for rng, pct in code:
-        if len(result) > 0:
-            result += "-"
-        result += "%02x" % int(rng)
-        result += "%02x" % ctypes.c_ubyte(int(pct)).value
-
-    return result
-
-
 def fromHex(str):
     result = []
     str = str.replace('-', '')
@@ -111,17 +98,6 @@ def fromHex(str):
         result.append((rng, pct))
 
     return result
-
-
-def random_update_rule():
-    result = []
-    for i in range(len(COLOR_TABLE)):
-        rng = np.random.randint(0, 255)
-        pct = np.random.randint(-128, 128)
-
-        result.append((rng, pct))
-    return toHex(result)
-
 
 def randomize_lattice(ml_instance):
     height = ml_instance['height']
