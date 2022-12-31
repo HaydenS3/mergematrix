@@ -111,7 +111,6 @@ def new_ml_instance(height, width, rule_str):
     result = {
         'height': height,
         'width': width,
-        'rule_str': rule_str,
         'sorted_rule': parse_update_rule(rule_str),
         'time_step': 0,
         'track': {},
