@@ -3,8 +3,6 @@ from scipy.ndimage import convolve
 import scipy
 import scipy.stats
 import ctypes
-from PIL import Image
-import dp
 
 # The color table.
 COLOR_TABLE = [
