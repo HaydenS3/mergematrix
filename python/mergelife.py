@@ -107,14 +107,6 @@ def randomize_lattice(ml_instance):
     ml_instance['lattice'][0]['data'] = np.random.randint(0, 256, size=(height, width, 3), dtype=np.uint8)
     ml_instance['lattice'][1]['data'] = np.copy(ml_instance['lattice'][0]['data'])
 
-
-def save_image(ml_instance, filename):
-    lattice = ml_instance['lattice'][0]['data']
-    newimage = Image.new('RGB', (len(lattice[0]), len(lattice)))  # type, size
-    newimage.putdata([tuple(p) for row in lattice for p in row])
-    newimage.save(filename)  # takes type from filename extension
-
-
 def new_ml_instance(height, width, rule_str):
     result = {
         'height': height,
