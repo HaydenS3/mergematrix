@@ -8,6 +8,7 @@ from matplotlib.widgets import Button
 import mergelife
 from secrets import token_hex
 import time
+import os, psutil
 
 STATIC_LIMIT = 25
 TIME_LIMIT = 60
@@ -29,6 +30,9 @@ class viewer:
         self.ml_inst = mergelife.new_ml_instance(self.rows, self.cols, self.gen_rule())
 
     def updatefig(self, *args):
+        process = psutil.Process(os.getpid())
+        print(process.memory_info().rss)
+
         data2 = mergelife.update_step(self.ml_inst)
         if self.detect_static_rule():
             self.create_ml_inst(None)
