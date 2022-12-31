@@ -125,21 +125,6 @@ def new_ml_instance(height, width, rule_str):
     result['lattice'][1]['data'] = np.copy(result['lattice'][0]['data'])
     return result
 
-def count_discrete(ml_instance):
-    states = set()
-    lattice = ml_instance['lattice'][0]['data']
-    for row in range(lattice.shape[0]):
-        for col in range(lattice.shape[1]):
-            states.add(str(lattice[row][col]))
-    return len(states)
-
-def calc_stat_largest_rect(ml_inst,o):
-    height = ml_inst['height']
-    width = ml_inst['width']
-    e2 = ml_inst['lattice'][1]['eval']
-    mr = dp.max_size(e2['merge'], o['mode'])
-    return (mr[0] * mr[1]) / (height * width)
-
 def calc_activity(ml_instance):
     height = ml_instance['height']
     width = ml_instance['width']
