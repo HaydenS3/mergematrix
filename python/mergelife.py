@@ -16,7 +16,7 @@ COLOR_TABLE = [
     [255, 255, 255]  # White 7
 ]
 
-
+# Generate (rng, pct, i) tuples from code
 def parse_update_rule(code):
     code = fromHex(code)
 
@@ -82,9 +82,9 @@ def update_step(ml_instance):
     ml_instance['time_step'] += 1
     return current_data
 
+# Parse a hex string into a list of (rng, pct) tuples
 def fromHex(str):
     result = []
-    str = str.replace('-', '')
     for i in range(len(COLOR_TABLE)):
         idx = i * 4
         rng = str[idx:idx + 2]
@@ -94,6 +94,8 @@ def fromHex(str):
 
         pct = ctypes.c_byte(pct).value  # Twos complement
         result.append((rng, pct))
+    
+    print(result)
 
     return result
 
@@ -105,6 +107,7 @@ def randomize_lattice(ml_instance):
     ml_instance['lattice'][0]['data'] = np.random.randint(0, 256, size=(height, width, 3), dtype=np.uint8)
     ml_instance['lattice'][1]['data'] = np.copy(ml_instance['lattice'][0]['data'])
 
+# Create a new instance of the merge life simulation
 def new_ml_instance(height, width, rule_str):
     result = {
         'height': height,

@@ -19,26 +19,27 @@ class viewer:
         self.cols = cols
         self.interval = interval
         self.fig = plt.figure()
-        data = np.random.randint(0,256, size=(self.rows, self.cols, 3), dtype=np.uint8)
-        self.im = plt.imshow(data, animated=True)
+        starting_data = np.random.randint(0,256, size=(self.rows, self.cols, 3), dtype=np.uint8)
+        self.im = plt.imshow(starting_data, animated=True)
         self.create_ml_inst(None)
         self.time = time.perf_counter()
 
+    # Create a new instance of mergelife. Reset the static counter and timer
     def create_ml_inst(self, event):
         self.static_cnt = 0
         self.time = time.perf_counter()
         self.ml_inst = mergelife.new_ml_instance(self.rows, self.cols, self.gen_rule())
 
     def updatefig(self, *args):
-        process = psutil.Process(os.getpid())
-        print(process.memory_info().rss)
+        # process = psutil.Process(os.getpid())
+        # print(process.memory_info().rss)
 
-        data2 = mergelife.update_step(self.ml_inst)
+        new_data = mergelife.update_step(self.ml_inst)
         if self.detect_static_rule():
             self.create_ml_inst(None)
         if time.perf_counter() - self.time > TIME_LIMIT:
             self.create_ml_inst(None)
-        self.im.set_array(data2)
+        self.im.set_array(new_data)
         return self.im, # Theres a comma here for some reason
 
     def go_animate(self):
