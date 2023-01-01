@@ -123,7 +123,7 @@ def new_ml_instance(height, width, rule_str):
     }
 
     randomize_lattice(result)
-    result['lattice'][1]['data'] = np.copy(result['lattice'][0]['data'])
+    # result['lattice'][1]['data'] = np.copy(result['lattice'][0]['data'])
     return result
 
 def calc_activity(ml_instance):

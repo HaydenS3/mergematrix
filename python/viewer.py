@@ -31,9 +31,6 @@ class viewer:
         self.ml_inst = mergelife.new_ml_instance(self.rows, self.cols, self.gen_rule())
 
     def updatefig(self, *args):
-        # process = psutil.Process(os.getpid())
-        # print(process.memory_info().rss)
-
         new_data = mergelife.update_step(self.ml_inst)
         if self.detect_static_rule():
             self.create_ml_inst(None)
