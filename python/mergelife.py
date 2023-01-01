@@ -6,17 +6,19 @@ import ctypes
 
 # The color table.
 COLOR_TABLE = [
-    [0, 0, 0],  # Black 0
-    [255, 0, 0],  # Red 1
-    [0, 255, 0],  # Green 2
+    [0, 0, 0],      # Black 0
+    [255, 0, 0],    # Red 1
+    [0, 255, 0],    # Green 2
     [255, 255, 0],  # Yellow 3
-    [0, 0, 255],  # Blue 4
+    [0, 0, 255],    # Blue 4
     [255, 0, 255],  # Purple 5
     [0, 255, 255],  # Cyan 6
-    [255, 255, 255]  # White 7
+    [255, 255, 255] # White 7
 ]
 
 # Generate (rng, pct, i) tuples from code
+# Range is converted to 0-2040, pct is converted to -1.0 to 1.0
+# List is sorted by ascending range
 def parse_update_rule(code):
     code = fromHex(code)
 
@@ -32,7 +34,7 @@ def parse_update_rule(code):
     sorted_code = sorted(sorted_code)
     return sorted_code
 
-
+# Does some stats to calculate the next frame
 def update_step(ml_instance):
     kernel = [[1, 1, 1], [1, 0, 1], [1, 1, 1]]
     THIRD = 1.0 / 3.0
@@ -83,6 +85,7 @@ def update_step(ml_instance):
     return current_data
 
 # Parse a hex string into a list of (rng, pct) tuples
+# For each set of bytes, the first byte is the range (0 to 255), the second is the percent (-128 to 127)
 def fromHex(str):
     result = []
     for i in range(len(COLOR_TABLE)):
@@ -95,8 +98,6 @@ def fromHex(str):
         pct = ctypes.c_byte(pct).value  # Twos complement
         result.append((rng, pct))
     
-    print(result)
-
     return result
 
 def randomize_lattice(ml_instance):
