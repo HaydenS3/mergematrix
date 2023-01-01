@@ -44,15 +44,17 @@ def update_step(ml_instance):
     height = ml_instance['height']
     width = ml_instance['width']
     changed = np.zeros((height, width), dtype=np.bool)
-
-    # Swap lattice
-    t = ml_instance['lattice'][1]
-    ml_instance['lattice'][1] = ml_instance['lattice'][0]
-    ml_instance['lattice'][0] = t
+    switch = ml_instance['switch']
+    
+    ml_instance['switch'] = not switch
 
     # Get current and previous lattice
-    prev_data = ml_instance['lattice'][1]['data']
-    current_data = ml_instance['lattice'][0]['data']
+    if switch:
+        prev_data = ml_instance['lattice'][0]['data']
+        current_data = ml_instance['lattice'][1]['data']
+    else:
+        prev_data = ml_instance['lattice'][1]['data']
+        current_data = ml_instance['lattice'][0]['data']
 
     # Merge RGB
     data_avg = np.dot(prev_data, [THIRD, THIRD, THIRD])
@@ -75,11 +77,18 @@ def update_step(ml_instance):
 
         d = COLOR_TABLE[cidx] - prev_data[mask]
         current_data[mask] = prev_data[mask] + np.floor(d * pct)
-        ml_instance['lattice'][0]['eval'] = {
-            'mode': pad_val,
-            'merge': data_avg,
-            'neighbor': data_cnt
-        }
+        if switch:
+            ml_instance['lattice'][0]['eval'] = {
+                'mode': pad_val,
+                'merge': data_avg,
+                'neighbor': data_cnt
+            }
+        else:
+            ml_instance['lattice'][1]['eval'] = {
+                'mode': pad_val,
+                'merge': data_avg,
+                'neighbor': data_cnt
+            }
 
     ml_instance['time_step'] += 1
     return current_data
@@ -115,6 +124,7 @@ def new_ml_instance(height, width, rule_str):
         'width': width,
         'sorted_rule': parse_update_rule(rule_str),
         'time_step': 0,
+        'switch' : False,
         'track': {},
         'lattice': [
             {'data': None, 'eval': None},
@@ -123,7 +133,6 @@ def new_ml_instance(height, width, rule_str):
     }
 
     randomize_lattice(result)
-    # result['lattice'][1]['data'] = np.copy(result['lattice'][0]['data'])
     return result
 
 def calc_activity(ml_instance):

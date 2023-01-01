@@ -13,8 +13,8 @@ Stats
 - chaos: ((height \* width) - (cnt_bg + cnt_fg + cnt_act)) / # of pixels
 
 Memory Usage
-- current data: 900 bytes
-- next data: 900 bytes
+- lattice.1.data: 900 bytes
+- lattice.0.data: 900 bytes
 - color table: 24 bits (3 bytes)
 - code: 16 bytes
 - sorted code: 56 bytes
