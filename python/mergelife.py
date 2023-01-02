@@ -138,16 +138,10 @@ def calc_activity(ml_instance):
     width = ml_instance['width']
     time_step = ml_instance['time_step']
 
-    e1 = ml_instance['lattice'][0]['eval']
-    e2 = ml_instance['lattice'][1]['eval']
-
-    if e1 is None or e2 is None:
-        return  0
-
-    d2_avg = e2['merge']
+    d2_avg = ml_instance['lattice'][1]['eval']['merge']
 
     # What percent of the grid is the mode, what percent is the background
-    md2 = e2['mode']
+    md2 = ml_instance['lattice'][1]['eval']['mode']
 
     mode_mask = (d2_avg == md2)
 
