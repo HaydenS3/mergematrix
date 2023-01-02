@@ -43,7 +43,6 @@ def update_step(ml_instance):
     sorted_rule = ml_instance['sorted_rule']
     height = ml_instance['height']
     width = ml_instance['width']
-    changed = np.zeros((height, width), dtype=np.bool)
     switch = ml_instance['switch']
     
     ml_instance['switch'] = not switch
@@ -57,17 +56,17 @@ def update_step(ml_instance):
         current_data = ml_instance['lattice'][0]['data']
 
     # Merge RGB
-    data_avg = np.dot(prev_data, [THIRD, THIRD, THIRD])
+    data_avg = np.dot(prev_data, [THIRD, THIRD, THIRD]) # Average RGB of each pixel
     data_avg = data_avg.astype(int)
-    pad_val = scipy.stats.mode(data_avg, axis=None)[0]
+    pad_val = scipy.stats.mode(data_avg, axis=None)[0] # Mode of all averages
     pad_val = int(pad_val)
-    data_cnt = convolve(data_avg, kernel, cval=pad_val, mode='constant')
+    data_cnt = convolve(data_avg, kernel, cval=pad_val, mode='constant') # No idea how this works
 
+    previous_limit = 0
     # Perform update
     for limit, pct, cidx in sorted_rule:
-        mask = data_cnt < limit
-        mask = np.logical_and(mask, np.logical_not(changed))
-        changed = np.logical_or(changed, mask)
+        mask = np.logical_and(data_cnt < limit, data_cnt >= previous_limit)
+        previous_limit = limit
 
         if pct < 0:
             pct = abs(pct)

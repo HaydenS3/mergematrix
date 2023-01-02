@@ -28,7 +28,9 @@ class viewer:
     def create_ml_inst(self, event):
         self.static_cnt = 0
         self.time = time.perf_counter()
-        self.ml_inst = mergelife.new_ml_instance(self.rows, self.cols, self.gen_rule())
+        rule = self.gen_rule()
+        print(f"Rule: {rule}")
+        self.ml_inst = mergelife.new_ml_instance(self.rows, self.cols, rule)
 
     def updatefig(self, *args):
         new_data = mergelife.update_step(self.ml_inst)
