@@ -158,13 +158,12 @@ def calc_activity(ml_instance):
     if time_step >= 25:
         t = (ml_instance['time_step'] - last_mode)
         t = np.logical_and(t > 5, t < 25)
-        sp = np.sum(t)
+        active_cnt = np.sum(t)
     else:
-        sp = 0
+        active_cnt = 0
 
     size = height * width
-    cnt_act = sp
 
-    cnt_act /= size
+    active_cnt /= size
 
-    return cnt_act
+    return active_cnt
