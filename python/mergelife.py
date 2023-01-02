@@ -41,8 +41,6 @@ def update_step(ml_instance):
 
     # Get important values
     sorted_rule = ml_instance['sorted_rule']
-    height = ml_instance['height']
-    width = ml_instance['width']
     switch = ml_instance['switch']
     
     ml_instance['switch'] = not switch

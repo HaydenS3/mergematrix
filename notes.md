@@ -21,4 +21,10 @@ Memory Usage
 - kernel: 9 bits (2 bytes)
 - height: 1 byte
 - width: 1 byte
-- changed: 300 bits (40 bytes)
+- data_avg: 300 bytes
+- pad_val: 1 byte
+- data_cnt: 300 bytes
+- mask: 300 bits (38 bytes)
+- d: 900 bytes
+- mode_mask: 300 bits (38 bytes)
+- last_mode: 300 bytes
