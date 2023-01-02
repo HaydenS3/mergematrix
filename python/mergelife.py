@@ -62,17 +62,15 @@ def update_step(ml_instance):
     pad_val = int(pad_val)
     data_cnt = convolve(data_avg, kernel, cval=pad_val, mode='constant') # No idea how this works
 
-    previous_limit = 0
     # Perform update
+    previous_limit = 0
     for limit, pct, cidx in sorted_rule:
         mask = np.logical_and(data_cnt < limit, data_cnt >= previous_limit)
         previous_limit = limit
 
         if pct < 0:
             pct = abs(pct)
-            cidx = cidx + 1
-            if cidx >= len(COLOR_TABLE):
-                cidx = 0
+            cidx = (cidx + 1) % len(COLOR_TABLE)
 
         d = COLOR_TABLE[cidx] - prev_data[mask]
         current_data[mask] = prev_data[mask] + np.floor(d * pct)
