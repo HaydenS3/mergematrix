@@ -139,8 +139,6 @@ def calc_activity(ml_instance):
     time_step = ml_instance['time_step']
 
     d2_avg = ml_instance['lattice'][1]['eval']['merge']
-
-    # What percent of the grid is the mode, what percent is the background
     md2 = ml_instance['lattice'][1]['eval']['mode']
 
     mode_mask = (d2_avg == md2)
@@ -159,9 +157,7 @@ def calc_activity(ml_instance):
     # An active cell has not been a background cell for 5 steps, but was a background cell in the last 25 steps
     if time_step >= 25:
         t = (ml_instance['time_step'] - last_mode)
-        t1 = t > 5
-        t2 = t < 25
-        t = np.logical_and(t1, t2)
+        t = np.logical_and(t > 5, t < 25)
         sp = np.sum(t)
     else:
         sp = 0
