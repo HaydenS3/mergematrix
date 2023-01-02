@@ -1,4 +1,7 @@
-# https://hackaday.com/2019/10/29/numpy-comes-to-micro-python/
+# https://github.com/v923z/micropython-ulab
+# Will support dot, copy, sum, convolve
+
+# Simulator https://wokwi.com/projects/322595929479709267
 
 import numpy as np
 from scipy.ndimage import convolve
@@ -60,7 +63,7 @@ def update_step(ml_instance):
     data_avg = data_avg.astype(int)
     pad_val = scipy.stats.mode(data_avg, axis=None)[0] # Mode of all averages
     pad_val = int(pad_val)
-    data_cnt = convolve(data_avg, kernel, cval=pad_val, mode='constant') # No idea how this works
+    data_cnt = convolve(data_avg, kernel, cval=pad_val, mode='constant') # https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.convolve.html
 
     # Perform update
     previous_limit = 0
