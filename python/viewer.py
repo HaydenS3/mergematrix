@@ -8,7 +8,6 @@ from matplotlib.widgets import Button
 import mergelife
 from secrets import token_hex
 import time
-import os, psutil
 
 STATIC_LIMIT = 25
 TIME_LIMIT = 60
