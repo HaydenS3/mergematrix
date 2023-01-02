@@ -72,19 +72,20 @@ def update_step(ml_instance):
             pct = abs(pct)
             cidx = (cidx + 1) % len(COLOR_TABLE)
 
+        # Moves the color towards the target color
         d = COLOR_TABLE[cidx] - prev_data[mask]
         current_data[mask] = prev_data[mask] + np.floor(d * pct)
+
+        # Save stats for calculating activity
         if switch:
             ml_instance['lattice'][0]['eval'] = {
                 'mode': pad_val,
                 'merge': data_avg,
-                'neighbor': data_cnt
             }
         else:
             ml_instance['lattice'][1]['eval'] = {
                 'mode': pad_val,
                 'merge': data_avg,
-                'neighbor': data_cnt
             }
 
     ml_instance['time_step'] += 1
