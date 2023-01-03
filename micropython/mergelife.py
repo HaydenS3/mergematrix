@@ -5,7 +5,7 @@
 
 from ulab import numpy as np
 import ulab
-from micropython.vmatrix import colors
+from vmatrix import colors
 # from scipy.ndimage import convolve
 # import scipy
 # import scipy.stats
