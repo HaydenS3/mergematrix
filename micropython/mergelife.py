@@ -3,11 +3,12 @@
 
 # Simulator https://wokwi.com/projects/322595929479709267
 
-import numpy as np
-from scipy.ndimage import convolve
-import scipy
-import scipy.stats
-import ctypes
+from ulab import numpy as np
+import ulab
+# from scipy.ndimage import convolve
+# import scipy
+# import scipy.stats
+# import ctypes
 
 # The color table.
 COLOR_TABLE = [
@@ -21,23 +22,42 @@ COLOR_TABLE = [
     [255, 255, 255] # White 7
 ]
 
-# Generate (rng, pct, i) tuples from code
-# Range is converted to 0-2040, pct is converted to -1.0 to 1.0
+# Return twos complement of val
+def twos_comp(val, bits):
+    if (val & (1 << (bits - 1))) != 0:
+        val = val - (1 << bits)
+    return val
+
+# Convert signed byte to percent
+def to_percent(val):
+    if val > 0:
+        return val / 127.0
+    else:
+        return val / 128.0
+
+# Generate (rng, pct, i) tuples from rule
+# Range is a byte converted to 0-2040, pct is signed byte converted to -1.0 to 1.0
 # List is sorted by ascending range
-def parse_update_rule(code):
-    code = fromHex(code)
-
-    sorted_code = []
-    for i, x in enumerate(code):
-        rng = int(x[0] * 8)
-        if x[1] > 0:
-            pct = x[1] / 127.0
+def parse_rule(rule):
+    print(rule.hex())
+    switch = True
+    code = []
+    rng = None
+    pct = None
+    i = 0
+    for b in rule:
+        if switch:
+            rng = b * 8
+            if rng == 2040:
+                rng = 2048
+            switch = False
         else:
-            pct = x[1] / 128.0
-        sorted_code.append((2048 if rng == 2040 else rng, pct, i))
-
-    sorted_code = sorted(sorted_code)
-    return sorted_code
+            pct = twos_comp(b, 8)
+            pct = to_percent(pct)
+            switch = True
+            code.append((rng, pct, i))
+            i += 1
+    return sorted(code)
 
 # Does some stats to calculate the next frame
 def update_step(ml_instance):
@@ -94,36 +114,22 @@ def update_step(ml_instance):
     ml_instance['time_step'] += 1
     return current_data
 
-# Parse a hex string into a list of (rng, pct) tuples
-# For each set of bytes, the first byte is the range (0 to 255), the second is the percent (-128 to 127)
-def fromHex(str):
-    result = []
-    for i in range(len(COLOR_TABLE)):
-        idx = i * 4
-        rng = str[idx:idx + 2]
-        pct = str[idx + 2:idx + 4]
-        rng = int(rng, 16)
-        pct = int(pct, 16)
-
-        pct = ctypes.c_byte(pct).value  # Twos complement
-        result.append((rng, pct))
-    
-    return result
-
 def randomize_lattice(ml_instance):
     height = ml_instance['height']
     width = ml_instance['width']
     ml_instance['track'] = {}
     ml_instance['time_step'] = 0
+    print(f"ulab version: {ulab.__version__}")
+    data = np.zeros((height, width, 3), dtype=np.uint8)
     ml_instance['lattice'][0]['data'] = np.random.randint(0, 256, size=(height, width, 3), dtype=np.uint8)
     ml_instance['lattice'][1]['data'] = np.copy(ml_instance['lattice'][0]['data'])
 
 # Create a new instance of the merge life simulation
-def new_ml_instance(height, width, rule_str):
+def new_ml_instance(height, width, rule):
     result = {
         'height': height,
         'width': width,
-        'sorted_rule': parse_update_rule(rule_str),
+        'sorted_rule': parse_rule(rule),
         'time_step': 0,
         'switch' : False,
         'track': {},
