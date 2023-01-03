@@ -54,5 +54,3 @@ class vmatrix:
 #                 ]
 
 # vmatrix.printmatrix(color_matrix)
-
-print(colors.COLOR_TABLE)

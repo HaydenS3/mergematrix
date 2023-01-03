@@ -26,6 +26,10 @@ def to_percent(val):
     else:
         return val / 128.0
 
+# Convert double array to int array
+# def to_int_array(arr):
+#     return np.array(arr, dtype=np.uint8)
+
 # Generate (rng, pct, i) tuples from rule
 # Range is a byte converted to 0-2040, pct is signed byte converted to -1.0 to 1.0
 # List is sorted by ascending range
@@ -71,7 +75,7 @@ def update_step(ml_instance):
 
     # Merge RGB
     data_avg = np.dot(prev_data, np.array([THIRD, THIRD, THIRD])) # Average RGB of each pixel
-    data_avg = data_avg.astype(int)
+    data_avg = np.array(data_avg, dtype=np.uint8) # Convert to uint8
     pad_val = scipy.stats.mode(data_avg, axis=None)[0] # Mode of all averages
     pad_val = int(pad_val)
     data_cnt = convolve(data_avg, kernel, cval=pad_val, mode='constant') # https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.convolve.html
