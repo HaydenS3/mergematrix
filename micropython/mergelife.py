@@ -121,7 +121,7 @@ def randomize_lattice(ml_instance):
     ml_instance['time_step'] = 0
     print(f"ulab version: {ulab.__version__}")
     ml_instance['lattice'][0]['data'] = random_data(height, width)
-    ml_instance['lattice'][1]['data'] = np.copy(ml_instance['lattice'][0]['data'])
+    ml_instance['lattice'][1]['data'] = ml_instance['lattice'][0]['data'].copy()
 
 # Create a new instance of the merge life simulation
 def new_ml_instance(height, width, rule):
