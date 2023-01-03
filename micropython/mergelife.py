@@ -6,6 +6,8 @@
 from ulab import numpy as np
 import ulab
 from vmatrix import colors
+import random
+
 # from scipy.ndimage import convolve
 # import scipy
 # import scipy.stats
@@ -103,14 +105,22 @@ def update_step(ml_instance):
     ml_instance['time_step'] += 1
     return current_data
 
+def random_data(height, width):
+    data = np.zeros((height, width, 3), dtype=np.uint8)
+    for r in range(height):
+        for c in range(width):
+            data[r][c][0] = random.randint(0, 255)
+            data[r][c][1] = random.randint(0, 255)
+            data[r][c][2] = random.randint(0, 255)
+    return data
+
 def randomize_lattice(ml_instance):
     height = ml_instance['height']
     width = ml_instance['width']
     ml_instance['track'] = {}
     ml_instance['time_step'] = 0
     print(f"ulab version: {ulab.__version__}")
-    data = np.zeros((height, width, 3), dtype=np.uint8)
-    ml_instance['lattice'][0]['data'] = np.random.randint(0, 256, size=(height, width, 3), dtype=np.uint8)
+    ml_instance['lattice'][0]['data'] = random_data(height, width)
     ml_instance['lattice'][1]['data'] = np.copy(ml_instance['lattice'][0]['data'])
 
 # Create a new instance of the merge life simulation
