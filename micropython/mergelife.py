@@ -5,22 +5,11 @@
 
 from ulab import numpy as np
 import ulab
+from micropython.vmatrix import colors
 # from scipy.ndimage import convolve
 # import scipy
 # import scipy.stats
 # import ctypes
-
-# The color table.
-COLOR_TABLE = [
-    [0, 0, 0],      # Black 0
-    [255, 0, 0],    # Red 1
-    [0, 255, 0],    # Green 2
-    [255, 255, 0],  # Yellow 3
-    [0, 0, 255],    # Blue 4
-    [255, 0, 255],  # Purple 5
-    [0, 255, 255],  # Cyan 6
-    [255, 255, 255] # White 7
-]
 
 # Return twos complement of val
 def twos_comp(val, bits):
@@ -93,10 +82,10 @@ def update_step(ml_instance):
 
         if pct < 0:
             pct = abs(pct)
-            cidx = (cidx + 1) % len(COLOR_TABLE)
+            cidx = (cidx + 1) % len(colors.COLOR_TABLE)
 
         # Moves the color towards the target color
-        d = COLOR_TABLE[cidx] - prev_data[mask]
+        d = colors.COLOR_TABLE[cidx] - prev_data[mask]
         current_data[mask] = prev_data[mask] + np.floor(d * pct)
 
         # Save stats for calculating activity
