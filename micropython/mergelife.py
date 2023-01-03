@@ -115,10 +115,10 @@ def random_data(height, width):
             data[r][c][2] = random.randint(0, 255)
     return data
 
+# Randomize the lattices
 def randomize_lattice(ml_instance):
     height = ml_instance['height']
     width = ml_instance['width']
-    print(f"ulab version: {ulab.__version__}")
     ml_instance['lattice'][0]['data'] = random_data(height, width)
     ml_instance['lattice'][1]['data'] = ml_instance['lattice'][0]['data'].copy()
 

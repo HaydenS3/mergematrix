@@ -31,7 +31,8 @@ class colors:
                 rgb[i] = 255
             else:
                 rgb[i] = 0
-        return colors.list[colors.COLOR_TABLE.index(rgb)]   
+        index = colors.COLOR_TABLE.index(list(rgb))
+        return colors.list[index]   
 
 class vmatrix:
     # Prints a color to the terminal
@@ -53,3 +54,5 @@ class vmatrix:
 #                 ]
 
 # vmatrix.printmatrix(color_matrix)
+
+print(colors.COLOR_TABLE)
