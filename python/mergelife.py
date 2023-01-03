@@ -108,8 +108,6 @@ def fromHex(str):
 def randomize_lattice(ml_instance):
     height = ml_instance['height']
     width = ml_instance['width']
-    ml_instance['track'] = {}
-    ml_instance['time_step'] = 0
     ml_instance['lattice'][0]['data'] = np.random.randint(0, 256, size=(height, width, 3), dtype=np.uint8)
     ml_instance['lattice'][1]['data'] = np.copy(ml_instance['lattice'][0]['data'])
 

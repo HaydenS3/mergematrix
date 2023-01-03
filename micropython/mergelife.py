@@ -105,6 +105,7 @@ def update_step(ml_instance):
     ml_instance['time_step'] += 1
     return current_data
 
+# Generate random data
 def random_data(height, width):
     data = np.zeros((height, width, 3), dtype=np.uint8)
     for r in range(height):
@@ -117,8 +118,6 @@ def random_data(height, width):
 def randomize_lattice(ml_instance):
     height = ml_instance['height']
     width = ml_instance['width']
-    ml_instance['track'] = {}
-    ml_instance['time_step'] = 0
     print(f"ulab version: {ulab.__version__}")
     ml_instance['lattice'][0]['data'] = random_data(height, width)
     ml_instance['lattice'][1]['data'] = ml_instance['lattice'][0]['data'].copy()
