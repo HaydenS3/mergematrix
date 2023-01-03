@@ -70,7 +70,7 @@ def update_step(ml_instance):
         current_data = ml_instance['lattice'][0]['data']
 
     # Merge RGB
-    data_avg = np.dot(prev_data, [THIRD, THIRD, THIRD]) # Average RGB of each pixel
+    data_avg = np.dot(prev_data, np.array([THIRD, THIRD, THIRD])) # Average RGB of each pixel
     data_avg = data_avg.astype(int)
     pad_val = scipy.stats.mode(data_avg, axis=None)[0] # Mode of all averages
     pad_val = int(pad_val)
