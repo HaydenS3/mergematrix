@@ -6,7 +6,7 @@
 from ulab import numpy as np
 from vmatrix import colors
 import random
-import mlstats
+import mlsupport
 from ulab import scipy
 
 # from scipy.ndimage import convolve
@@ -52,12 +52,6 @@ def parse_rule(rule):
 
 # Does some stats to calculate the next frame
 def update_step(ml_instance):
-    # Kernel for counting neighbors
-    kernel = [[1, 1, 1],
-              [1, 0, 1],
-              [1, 1, 1]]
-    THIRD = 1.0 / 3.0
-
     # Get important values
     height = ml_instance['height']
     width = ml_instance['width']
@@ -75,9 +69,9 @@ def update_step(ml_instance):
         current_data = ml_instance['lattice'][0]['data']
 
     # Merge RGB
-    data_avg = mlstats.avg(prev_data, height, width)
-    pad_val = mlstats.mode(data_avg)
-    data_cnt = mlstats.count_neighbors(data_avg, pad_val, height, width)
+    data_avg = mlsupport.avg(prev_data, height, width)
+    pad_val = mlsupport.mode(data_avg)
+    data_cnt = mlsupport.count_neighbors(data_avg, pad_val, height, width)
 
     # Perform update
     previous_limit = 0
