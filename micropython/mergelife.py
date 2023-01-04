@@ -13,19 +13,6 @@ from ulab import scipy
 # import scipy.stats
 # import ctypes
 
-# Return twos complement of val
-def twos_comp(val, bits):
-    if (val & (1 << (bits - 1))) != 0:
-        val = val - (1 << bits)
-    return val
-
-# Convert signed byte to percent
-def to_percent(val):
-    if val > 0:
-        return val / 127.0
-    else:
-        return val / 128.0
-
 # Generate (rng, pct, i) tuples from rule
 # Range is a byte converted to 0-2040, pct is signed byte converted to -1.0 to 1.0
 # List is sorted by ascending range
@@ -43,8 +30,8 @@ def parse_rule(rule):
                 rng = 2048
             switch = False
         else:
-            pct = twos_comp(b, 8)
-            pct = to_percent(pct)
+            pct = mlsupport.twos_comp(b, 8)
+            pct = mlsupport.to_percent(pct)
             switch = True
             code.append((rng, pct, i))
             i += 1
@@ -76,16 +63,8 @@ def update_step(ml_instance):
     # Perform update
     previous_limit = 0
     for limit, pct, cidx in sorted_rule:
-        mask = np.logical_and(data_cnt < limit, data_cnt >= previous_limit)
+        current_data = update_data(current_data, prev_data, data_cnt, limit, previous_limit, pct, cidx, height, width)
         previous_limit = limit
-
-        if pct < 0:
-            pct = abs(pct)
-            cidx = (cidx + 1) % len(colors.COLOR_TABLE)
-
-        # Moves the color towards the target color
-        d = colors.COLOR_TABLE[cidx] - prev_data[mask]
-        current_data[mask] = prev_data[mask] + np.floor(d * pct)
 
         # Save stats for calculating activity
         if switch:
@@ -98,7 +77,6 @@ def update_step(ml_instance):
                 'mode': pad_val,
                 'merge': data_avg,
             }
-
     ml_instance['time_step'] += 1
     return current_data
 
@@ -136,6 +114,19 @@ def new_ml_instance(height, width, rule):
 
     randomize_lattice(result)
     return result
+
+def update_data(current_data, prev_data, data_cnt, limit, previous_limit, pct, cidx, height, width):
+    if pct < 0:
+            pct = abs(pct)
+            cidx = (cidx + 1) % len(colors.COLOR_TABLE)
+
+    new_data = current_data.copy()
+    for r in range(height):
+        for c in range(width):
+            if data_cnt[r][c] >= previous_limit and data_cnt[r][c] < limit:
+                d = colors.COLOR_TABLE[cidx] - prev_data[r][c]
+                new_data[r][c] = prev_data[r][c] + np.floor(d * pct)
+    return new_data
 
 def calc_activity(ml_instance):
     height = ml_instance['height']

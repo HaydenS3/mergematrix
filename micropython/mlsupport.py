@@ -45,3 +45,16 @@ def get_neighbor(arr, row, col, pad_val):
         return arr[row][col]
     except IndexError:
         return pad_val
+
+# Return twos complement of val
+def twos_comp(val, bits):
+    if (val & (1 << (bits - 1))) != 0:
+        val = val - (1 << bits)
+    return val
+
+# Convert signed byte to percent
+def to_percent(val):
+    if val > 0:
+        return val / 127.0
+    else:
+        return val / 128.0
