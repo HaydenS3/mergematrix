@@ -9,7 +9,6 @@ from vmatrix import colors
 import random
 
 # from scipy.ndimage import convolve
-# import scipy
 # import scipy.stats
 # import ctypes
 
@@ -25,6 +24,33 @@ def to_percent(val):
         return val / 127.0
     else:
         return val / 128.0
+
+def avg(arr, height, width):
+    avg_arr = np.zeros((height, width), dtype=np.uint8)
+    for row in range(height):
+        for col in range(width):
+            avg_arr[row][col] = (arr[row][col][0] + arr[row][col][1] + arr[row][col][2]) / 3
+    return avg_arr
+
+def mode(arr):
+    freq = {}
+    for row in arr:
+        for avg in row:
+            # mapping each value of list to a
+            # dictionary
+            freq.setdefault(avg, 0)
+            freq[avg] += 1
+         
+    # finding maximum value of dictionary
+    hf = max(freq.values())
+     
+    # creating an empty list
+    
+    # using for loop we are checking for most
+    # repeated value
+    for i, j in freq.items():
+        if j == hf:
+            return i
 
 # Convert double array to int array
 # def to_int_array(arr):
@@ -60,6 +86,8 @@ def update_step(ml_instance):
     THIRD = 1.0 / 3.0
 
     # Get important values
+    height = ml_instance['height']
+    width = ml_instance['width']
     sorted_rule = ml_instance['sorted_rule']
     switch = ml_instance['switch']
     
@@ -74,10 +102,9 @@ def update_step(ml_instance):
         current_data = ml_instance['lattice'][0]['data']
 
     # Merge RGB
-    data_avg = np.dot(prev_data, np.array([THIRD, THIRD, THIRD])) # Average RGB of each pixel
-    data_avg = np.array(data_avg, dtype=np.uint8) # Convert to uint8
-    pad_val = scipy.stats.mode(data_avg, axis=None)[0] # Mode of all averages
-    pad_val = int(pad_val)
+    data_avg = avg(prev_data, height, width) # Average RGB of each pixel
+    pad_val = mode(data_avg) # Mode of all averages
+    print(pad_val)
     data_cnt = convolve(data_avg, kernel, cval=pad_val, mode='constant') # https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.convolve.html
 
     # Perform update
