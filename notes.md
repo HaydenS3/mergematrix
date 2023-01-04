@@ -1,6 +1,6 @@
-Working on a function to detect non-interesting displays and automatically generate a new one. Analyzing Heaton's stats to see which stats can be used.
+### Stats
 
-Stats
+Working on a function to detect non-interesting displays and automatically generate a new one. Analyzing Heaton's stats to see which stats can be used.
 
 - mage: How long has the mode been its value
 - mode: Most common pixel color
@@ -12,7 +12,8 @@ Stats
 - act: cnt_act / # of pixels (**This is the stat we want**)
 - chaos: ((height \* width) - (cnt_bg + cnt_fg + cnt_act)) / # of pixels
 
-Memory Usage
+### Memory Usage
+
 - lattice.1.data: 900 bytes
 - lattice.0.data: 900 bytes
 - color table: 24 bits (3 bytes)
@@ -28,3 +29,15 @@ Memory Usage
 - d: 900 bytes
 - mode_mask: 300 bits (38 bytes)
 - last_mode: 300 bytes
+
+### Importing ndimage into ulab's scipy
+
+- `__init__.py` **(Needs to be edited to reflect below)**
+- `_filters.convolve`
+- `_filters._correlate_or_convolve`
+- `_ni_support._get_output`
+- `_filters._complex_via_real_components`
+- `_ni_support._normalize_sequence`
+- `_filters._invalid_origin`
+- `_ni_support._extend_mode_to_code`
+- `_filters.correlate`

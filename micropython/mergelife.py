@@ -4,10 +4,10 @@
 # Simulator https://wokwi.com/projects/322595929479709267
 
 from ulab import numpy as np
-import ulab
 from vmatrix import colors
 import random
 import mlstats
+from ulab import scipy
 
 # from scipy.ndimage import convolve
 # import scipy.stats
@@ -52,7 +52,10 @@ def parse_rule(rule):
 
 # Does some stats to calculate the next frame
 def update_step(ml_instance):
-    kernel = [[1, 1, 1], [1, 0, 1], [1, 1, 1]]
+    # Kernel for counting neighbors
+    kernel = [[1, 1, 1],
+              [1, 0, 1],
+              [1, 1, 1]]
     THIRD = 1.0 / 3.0
 
     # Get important values
@@ -72,9 +75,9 @@ def update_step(ml_instance):
         current_data = ml_instance['lattice'][0]['data']
 
     # Merge RGB
-    data_avg = mlstats.avg(prev_data, height, width) # Average RGB of each pixel
-    pad_val = mlstats.mode(data_avg) # Mode of all averages
-    data_cnt = convolve(data_avg, kernel, cval=pad_val, mode='constant')
+    data_avg = mlstats.avg(prev_data, height, width)
+    pad_val = mlstats.mode(data_avg)
+    data_cnt = mlstats.count_neighbors(data_avg, pad_val, height, width)
 
     # Perform update
     previous_limit = 0
