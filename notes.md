@@ -41,3 +41,10 @@ Working on a function to detect non-interesting displays and automatically gener
 - `_filters._invalid_origin`
 - `_ni_support._extend_mode_to_code`
 - `_filters.correlate`
+
+### Running
+
+```
+cd micropython
+./micropython viewer.py
+```

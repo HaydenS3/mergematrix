@@ -4,13 +4,19 @@ import os
 import mergelife
 from vmatrix import vmatrix
 import time
+import sys
 
 HEIGHT = 15
 WIDTH = 20
 dtime = .1
 ctime = time.time()
 
-rule = os.urandom(16)
+try:
+    rule = sys.argv[1]
+    rule = rule.replace('-', '')
+    rule = bytes.fromhex(rule)
+except:
+    rule = os.urandom(16)
 ml_inst = mergelife.new_ml_instance(HEIGHT, WIDTH, rule)
 
 nlines = 15
