@@ -18,21 +18,21 @@ from ulab import scipy
 # List is sorted by ascending range
 def parse_rule(rule):
     print(rule.hex())
-    switch = True
+    current = True
     code = []
     rng = None
     pct = None
     i = 0
     for b in rule:
-        if switch:
+        if current:
             rng = b * 8
             if rng == 2040:
                 rng = 2048
-            switch = False
+            current = False
         else:
             pct = mlsupport.twos_comp(b, 8)
             pct = mlsupport.to_percent(pct)
-            switch = True
+            current = True
             code.append((rng, pct, i))
             i += 1
     return sorted(code)
@@ -43,17 +43,12 @@ def update_step(ml_instance):
     height = ml_instance['height']
     width = ml_instance['width']
     sorted_rule = ml_instance['sorted_rule']
-    switch = ml_instance['switch']
+    current = ml_instance['current']
     
-    ml_instance['switch'] = not switch
+    ml_instance['current'] = not current
 
-    # Get current and previous lattice
-    if switch:
-        prev_data = ml_instance['lattice'][0]['data']
-        current_data = ml_instance['lattice'][1]['data']
-    else:
-        prev_data = ml_instance['lattice'][1]['data']
-        current_data = ml_instance['lattice'][0]['data']
+    prev_data = ml_instance['lattice'][not current]['data']
+    current_data = ml_instance['lattice'][current]['data']
 
     # Merge RGB
     data_avg = mlsupport.avg(prev_data, height, width)
@@ -66,18 +61,13 @@ def update_step(ml_instance):
         current_data = update_data(current_data, prev_data, data_cnt, limit, previous_limit, pct, cidx, height, width)
         previous_limit = limit
 
-        # Save stats for calculating activity
-        if switch:
-            ml_instance['lattice'][0]['eval'] = {
-                'mode': pad_val,
-                'merge': data_avg,
-            }
-        else:
-            ml_instance['lattice'][1]['eval'] = {
-                'mode': pad_val,
-                'merge': data_avg,
-            }
+        # TODO: This may need to change to `current`
+        ml_instance['lattice'][not current]['eval'] = {
+            'mode': pad_val,
+            'merge': data_avg,
+        }
     ml_instance['time_step'] += 1
+    ml_instance['lattice'][not current]['data'] = current_data
     return current_data
 
 # Generate random data
@@ -104,7 +94,7 @@ def new_ml_instance(height, width, rule):
         'width': width,
         'sorted_rule': parse_rule(rule),
         'time_step': 0,
-        'switch' : False,
+        'current' : False,
         'track': {},
         'lattice': [
             {'data': None, 'eval': None},
