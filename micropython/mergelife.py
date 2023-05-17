@@ -105,7 +105,7 @@ def new_ml_instance(height, width, rule):
     randomize_lattice(result)
     return result
 
-def update_data(current_data, prev_data, data_cnt, limit, previous_limit, pct, cidx, height, width):
+def update_data(current_data, prev_data, data_cnt, limit, previous_limit, pct, cidx, height, width):    
     if pct < 0:
             pct = abs(pct)
             cidx = (cidx + 1) % len(colors.COLOR_TABLE)
