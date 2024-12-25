@@ -13,12 +13,14 @@ COLOR_TABLE = [
     [0, 0, 255],    # Blue 4
     [255, 0, 255],  # Purple 5
     [0, 255, 255],  # Cyan 6
-    [255, 255, 255] # White 7
+    [255, 255, 255]  # White 7
 ]
 
 # Generate (rng, pct, i) tuples from code
 # Range is converted to 0-2040, pct is converted to -1.0 to 1.0
 # List is sorted by ascending range
+
+
 def parse_update_rule(code):
     code = fromHex(code)
 
@@ -35,6 +37,8 @@ def parse_update_rule(code):
     return sorted_code
 
 # Does some stats to calculate the next frame
+
+
 def update_step(ml_instance):
     kernel = [[1, 1, 1], [1, 0, 1], [1, 1, 1]]
     THIRD = 1.0 / 3.0
@@ -42,7 +46,7 @@ def update_step(ml_instance):
     # Get important values
     sorted_rule = ml_instance['sorted_rule']
     switch = ml_instance['switch']
-    
+
     ml_instance['switch'] = not switch
 
     # Get current and previous lattice
@@ -54,11 +58,12 @@ def update_step(ml_instance):
         current_data = ml_instance['lattice'][0]['data']
 
     # Merge RGB
-    data_avg = np.dot(prev_data, [THIRD, THIRD, THIRD]) # Average RGB of each pixel
+    data_avg = np.dot(prev_data, [THIRD, THIRD, THIRD])  # Average RGB of each pixel
     data_avg = data_avg.astype(int)
-    pad_val = scipy.stats.mode(data_avg, axis=None)[0] # Mode of all averages
+    pad_val = scipy.stats.mode(data_avg, axis=None)[0]  # Mode of all averages
     pad_val = int(pad_val)
-    data_cnt = convolve(data_avg, kernel, cval=pad_val, mode='constant') # https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.convolve.html
+    # https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.convolve.html
+    data_cnt = convolve(data_avg, kernel, cval=pad_val, mode='constant')
 
     # Perform update
     previous_limit = 0
@@ -91,6 +96,8 @@ def update_step(ml_instance):
 
 # Parse a hex string into a list of (rng, pct) tuples
 # For each set of bytes, the first byte is the range (0 to 255), the second is the percent (-128 to 127)
+
+
 def fromHex(str):
     result = []
     for i in range(len(COLOR_TABLE)):
@@ -102,8 +109,9 @@ def fromHex(str):
 
         pct = ctypes.c_byte(pct).value  # Twos complement
         result.append((rng, pct))
-    
+
     return result
+
 
 def randomize_lattice(ml_instance):
     height = ml_instance['height']
@@ -112,13 +120,15 @@ def randomize_lattice(ml_instance):
     ml_instance['lattice'][1]['data'] = np.copy(ml_instance['lattice'][0]['data'])
 
 # Create a new instance of the merge life simulation
+
+
 def new_ml_instance(height, width, rule_str):
     result = {
         'height': height,
         'width': width,
         'sorted_rule': parse_update_rule(rule_str),
         'time_step': 0,
-        'switch' : False,
+        'switch': False,
         'track': {},
         'lattice': [
             {'data': None, 'eval': None},
@@ -128,6 +138,7 @@ def new_ml_instance(height, width, rule_str):
 
     randomize_lattice(result)
     return result
+
 
 def calc_activity(ml_instance):
     height = ml_instance['height']
@@ -143,11 +154,10 @@ def calc_activity(ml_instance):
     if 'eval-last-mode' in ml_instance['track']:
         last_mode = ml_instance['track']['eval-last-mode']
     else:
-        last_mode = np.zeros((height, width), dtype=np.int)
+        last_mode = np.zeros((height, width), dtype=int)
         ml_instance['track']['eval-last-mode'] = last_mode
 
     last_mode[mode_mask] = time_step
-
 
     # Find the active cells
     # An active cell has not been a background cell for 5 steps, but was a background cell in the last 25 steps
