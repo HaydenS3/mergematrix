@@ -1,3 +1,7 @@
+### Install
+
+For ulab: `./build.sh 3`. Builds ulab for 3 dimensioned arrays.
+
 ### Stats
 
 Working on a function to detect non-interesting displays and automatically generate a new one. Analyzing Heaton's stats to see which stats can be used.
