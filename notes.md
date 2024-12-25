@@ -1,6 +1,7 @@
 ### Install
 
-For ulab: `./build.sh 3`. Builds ulab for 3 dimensioned arrays.
+- For ulab: `./build.sh 3`. Builds ulab for 3 dimensioned arrays.
+- Had to replace all `STATIC` with `static` to compile. See [this](https://github.com/micropython/micropython/wiki/Build-Troubleshooting)
 
 ### Stats
 
